@@ -18,7 +18,7 @@ class ImagePosts extends Model
             
             return $arrayVal;
              }
-             return ;
+             return NULL;
     }
     public function getThumbPathAttribute($value)
     {
@@ -27,6 +27,6 @@ class ImagePosts extends Model
             
             return $arrayVal;
              }
-             return ;
+             return Null;
     }
 }

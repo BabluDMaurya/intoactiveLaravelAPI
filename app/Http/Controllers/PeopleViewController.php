@@ -32,7 +32,7 @@ class PeopleViewController extends Controller {
             return response()->json(['status'=> true] , 200);
         } catch (\Exception $e)
         {
-            
+            return response()->json(['status' => $e->getMessage()], 500);
         }
     }
 

@@ -26,7 +26,7 @@ class PostController extends Controller
         $this->fcmTokenService = $fcmTokenService;
         $this->postService = $postService;
     }
-
+    
     public function uploadPost(Request $request) {
         try {
             $userData = Auth::User();
@@ -42,7 +42,7 @@ class PostController extends Controller
 
                     $picture = 'image/user_'.$userData->id.'_'.date('YmdHis').'_'.$key .'.jpeg';
                    
-                    $thumbPath = 'image/thumb/user_'.$userData->id.'_'.date('YmdHis').$key .'_'.'.jpeg';
+                    $thumbPath = 'image/thumb/user_'.$userData->id.'_'.date('YmdHis').$key .'_.jpeg';
                    // Storage::makeDirectory('public/image/user_'.$userData->id.'/thumbs/', 0755, true, true);
                     $imageParts = explode(";base64,", $f);
                     $imageTypeAux = explode("image/", $imageParts[0]);
@@ -80,7 +80,7 @@ class PostController extends Controller
                     'image_path' => $imgPath,
                      'thumb_path'=>$thPath
                 ]);
-
+                
                 //--add post Notification to users--//
                 
                 $notificationData = [
@@ -99,7 +99,7 @@ class PostController extends Controller
                     'moredata'=> 'more'
                 ];
                 $this->fcmTokenService->sendNotification($notify);
-
+                
                 //--add post Notification to users--//
                 
                 DB::commit();
@@ -135,7 +135,7 @@ class PostController extends Controller
             } else {
                 $userData = Auth::User();
             }
-          
+
             $post = $userData->posts(explode(',',$request['postType']))->paginate(10);
             $imgPost = $post->map(function ($ip) {
                 $ip->postLikes;
@@ -148,7 +148,7 @@ class PostController extends Controller
             return response()->json(['message' => $ex->getMessage()], 500);
         }
     }
-    
+
     public function getPostById(Request $request)
     {
         try{
@@ -293,25 +293,25 @@ class PostController extends Controller
             //--add post Notification to users--//
                 $cPost = Posts::where('id',$request['postId'])->first();
                 if($userData->id != $cPost->user_id){
-                
-                $notificationData = [
-                    'post_id'=>$request['postId'],
-                    'user_id'=>$userData->id,
-                    'post_type'=>9, 
-                    'description'=>$request['comment'],
-                    'following_uid'=>$cPost->user_id,
-                ];
-                $this->saveNotification($notificationData);
-                
-                $notify = [
-                    'user_ids'=> $cPost->user_id,
+                    
+                    $notificationData = [
+                        'post_id'=>$request['postId'],
+                        'user_id'=>$userData->id,
+                        'post_type'=>9, 
+                        'description'=>$request['comment'],
+                        'following_uid'=>$cPost->user_id,
+                    ];
+                    $this->saveNotification($notificationData);
+
+                    $notify = [
+                        'user_ids'=> $cPost->user_id,
                         'title'=> $userData->user_name.' '.config('constants.NOTIFICATION_COMMENT_TITLE'),
-                    'description'=>$request['comment'],
-                    'moredata'=> 'more'
-                ];
-                $this->fcmTokenService->sendNotification($notify);
+                        'description'=>$request['comment'],
+                        'moredata'=> 'more'
+                    ];
+                    $this->fcmTokenService->sendNotification($notify);
                 
-                }
+                }    
                 //--add post Notification to users--//
             
             DB::commit();

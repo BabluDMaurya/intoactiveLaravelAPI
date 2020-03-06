@@ -88,8 +88,11 @@ class FcmTokenService {
             $apns_ids = [];
             $responseData = [];           
             $users = explode(',', $data['user_ids']);
+            $this->FCMTokenData = UserFcmTokenModel::whereIn('user_id', $users)->select('token')->where('token', '!=', null)->get();
+            
             // for Android            
-            if ($this->FCMTokenData = UserFcmTokenModel::whereIn('user_id', $users)->select('token')->where('token', '!=', null)->get()) {
+            
+            if ($this->FCMTokenData) {
                 foreach ($this->FCMTokenData as $key => $value) {
                     $tokens[] = $value->token;
                 }
@@ -132,7 +135,7 @@ class FcmTokenService {
                 curl_close($ch);
             }
             // for IOS
-            if ($this->FCMTokenData = UserFcmTokenModel::whereIn('user_id', $users)->where('token', '!=', null)->select('token')->get()) {
+            if ($this->FCMTokenData) {
                 foreach ($this->FCMTokenData as $key => $value) {
                     $apns_ids[] = $value->apns_id;
                 }

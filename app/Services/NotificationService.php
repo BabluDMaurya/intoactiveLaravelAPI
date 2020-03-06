@@ -19,8 +19,8 @@ class NotificationService {
             $notification->map(function ($noti) {
                  return $noti->user->bios;
             });
-            return($notification);
             DB::commit();
+            return($notification);            
         } catch (\Exception $e) {
             DB::rollBack();
             throw $e;
@@ -34,8 +34,8 @@ class NotificationService {
             $notification->map(function ($noti) {
                  return $noti->user->bios;
             });
-            return($notification);
             DB::commit();
+            return($notification);            
         } catch (\Exception $e) {
             DB::rollBack();
             throw $e;
@@ -45,9 +45,9 @@ class NotificationService {
         $userData = Auth::user();
         DB::beginTransaction();
         try {                       
-            $notificationCount = $userData->notificationCount;               
-            return($notificationCount);
-            DB::commit();
+            $notificationCount = $userData->notificationCount;  
+            DB::commit();            
+            return($notificationCount);            
         } catch (\Exception $e) {
             DB::rollBack();
             throw $e;
@@ -64,9 +64,8 @@ class NotificationService {
             
             //-----deleting the 30 day's old notification form database
             Notification::where('created_at', '<=', Carbon::now()->subDays(30)->toDateTimeString())->delete();
-            
-            return True;
             DB::commit();
+            return True;            
         } catch (\Exception $e) {
             DB::rollBack();
             throw $e;
